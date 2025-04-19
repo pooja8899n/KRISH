@@ -1,0 +1,175 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Particle Animation and Timer</title>
+    <style>
+        /* Basic Styles */
+        body {
+            margin: 0;
+            padding: 0;
+            background-color: black;
+            color: white;
+            font-family: Arial, sans-serif;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            overflow: hidden;
+            position: relative;
+        }
+
+        .container {
+            text-align: center;
+            position: relative;
+        }
+
+        #textview1, #textview2, #textview3 {
+            margin: 10px;
+            font-size: 24px;
+        }
+
+        #textview3 {
+            font-size: 30px;
+            color: yellow;
+            font-weight: bold;
+        }
+
+        button {
+            padding: 10px 20px;
+            margin: 10px;
+            font-size: 18px;
+            cursor: pointer;
+            border: 2px solid red;
+            background-color: black;
+            color: red;
+            font-weight: bold;
+            transition: all 0.3s ease;
+        }
+
+        button:hover {
+            background-color: red;
+            color: white;
+        }
+
+        .glowing-line {
+            border: 2px solid red;
+            width: 100%;
+            height: 2px;
+            margin-top: 30px;
+            animation: glowing 1.5s infinite ease-in-out;
+        }
+
+        /* Particle Effect */
+        .particle {
+            position: absolute;
+            background-color: red;
+            border-radius: 50%;
+            animation: particle-animation 2s infinite;
+        }
+
+        @keyframes glowing {
+            0% { opacity: 0.3; }
+            50% { opacity: 1; }
+            100% { opacity: 0.3; }
+        }
+
+        @keyframes particle-animation {
+            0% {
+                transform: scale(0.5);
+                opacity: 1;
+            }
+            100% {
+                transform: scale(1.5);
+                opacity: 0;
+            }
+        }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <!-- Text Views -->
+    <div id="textview1">TextView 1</div>
+    <div id="textview2">TextView 2</div>
+    <div id="textview3">TextView 3</div>
+
+    <!-- Buttons -->
+    <button id="checkResult">CHECK RESULT</button>
+    <button id="history">HISTORY</button>
+
+    <!-- ListView -->
+    <ul id="resultList">
+        <!-- Random results will be shown here -->
+    </ul>
+
+    <!-- Glowing Line -->
+    <div class="glowing-line"></div>
+</div>
+
+<!-- Particle Animation Script -->
+<script>
+    // Generate particles
+    for (let i = 0; i < 50; i++) {
+        let particle = document.createElement('div');
+        particle.classList.add('particle');
+        particle.style.left = `${Math.random() * 100}%`;
+        particle.style.top = `${Math.random() * 100}%`;
+        particle.style.width = `${Math.random() * 10 + 5}px`;
+        particle.style.height = particle.style.width;
+        particle.style.animationDuration = `${Math.random() * 1 + 1}s`;
+        document.body.appendChild(particle);
+    }
+
+    // Timer function to update TextView1 and TextView2 every minute
+    let timerInterval;
+    let periodResult = 'WAIT FOR NEXT PERIOD';
+    let hasChecked = false;
+
+    function startTimer() {
+        let startTime = new Date();
+        timerInterval = setInterval(function () {
+            let currentTime = new Date();
+            let seconds = currentTime.getSeconds();
+            let remainingSeconds = 60 - seconds;
+            let minutes = currentTime.getMinutes();
+            let totalMinutes = currentTime.getHours() * 60 + minutes;
+
+            // Update TextView1 and TextView2 with time info
+            document.getElementById('textview1').innerText = `Date: ${startTime.toISOString().split('T')[0]} 
+                    Time (UTC): ${String(1000 + totalMinutes)}`;
+            document.getElementById('textview2').innerText = `Remaining: ${String(remainingSeconds).padStart(2, '0')} sec`;
+        }, 1000); // Update every second
+    }
+
+    // Handle Check Result Button Click
+    document.getElementById('checkResult').addEventListener('click', function () {
+        if (hasChecked) {
+            document.getElementById('textview3').innerText = "WAIT FOR NEXT PERIOD";
+            return;
+        }
+
+        // Simulate random result (BIG or SMALL)
+        let randomResult = Math.random() > 0.5 ? "BIG" : "SMALL";
+        document.getElementById('textview3').innerText = randomResult;
+
+        // Add the result to the ListView
+        let listItem = document.createElement('li');
+        listItem.textContent = randomResult;
+        document.getElementById('resultList').appendChild(listItem);
+
+        hasChecked = true;
+    });
+
+    // Handle History Button Click (Optional functionality)
+    document.getElementById('history').addEventListener('click', function () {
+        alert("History feature is under development.");
+    });
+
+    // Start the timer
+    startTimer();
+</script>
+
+</body>
+</html>
