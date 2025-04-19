@@ -5,11 +5,11 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Particle Animation and Timer</title>
     <style>
-        /* Background with gradient */
+        /* Background with dynamic colorful gradient */
         body {
             margin: 0;
             padding: 0;
-            background: linear-gradient(135deg, rgba(255, 0, 0, 0.6), rgba(0, 0, 0, 0.8));
+            background: linear-gradient(135deg, rgba(255, 0, 0, 0.7), rgba(0, 0, 255, 0.6), rgba(0, 255, 0, 0.5));
             color: white;
             font-family: 'Arial', sans-serif;
             display: flex;
@@ -18,6 +18,20 @@
             height: 100vh;
             overflow: hidden;
             position: relative;
+            animation: gradientShift 10s infinite alternate;
+        }
+
+        /* Keyframes for background gradient animation */
+        @keyframes gradientShift {
+            0% {
+                background: linear-gradient(135deg, rgba(255, 0, 0, 0.7), rgba(0, 0, 255, 0.6), rgba(0, 255, 0, 0.5));
+            }
+            50% {
+                background: linear-gradient(135deg, rgba(0, 255, 255, 0.7), rgba(255, 255, 0, 0.6), rgba(255, 0, 255, 0.5));
+            }
+            100% {
+                background: linear-gradient(135deg, rgba(255, 0, 0, 0.7), rgba(0, 0, 255, 0.6), rgba(0, 255, 0, 0.5));
+            }
         }
 
         .container {
@@ -30,7 +44,7 @@
         #textview1, #textview2, #textview3 {
             margin: 15px;
             font-size: 24px;
-            text-shadow: 1px 1px 3px rgba(0, 0, 0, 0.6);
+            text-shadow: 2px 2px 6px rgba(0, 0, 0, 0.6);
             opacity: 0;
             animation: fadeIn 2s ease-in-out forwards;
         }
@@ -39,10 +53,21 @@
             font-size: 30px;
             color: yellow;
             font-weight: bold;
-            text-shadow: 2px 2px 5px rgba(255, 255, 0, 0.8);
+            text-shadow: 3px 3px 8px rgba(255, 255, 0, 0.8);
+            animation: glowText 1.5s infinite alternate;
         }
 
-        /* Button styling with hover effects */
+        /* Glowing text animation */
+        @keyframes glowText {
+            0% {
+                text-shadow: 0 0 10px #ff0, 0 0 20px #ff0, 0 0 30px #ff0, 0 0 40px #ff0;
+            }
+            100% {
+                text-shadow: 0 0 15px #ff0, 0 0 30px #ff0, 0 0 45px #ff0, 0 0 60px #ff0;
+            }
+        }
+
+        /* Button styling with glowing effects */
         button {
             padding: 12px 25px;
             margin: 10px;
@@ -61,6 +86,17 @@
             background-color: red;
             color: white;
             box-shadow: 0 8px 25px rgba(255, 0, 0, 0.7);
+            animation: glowButton 1s infinite alternate;
+        }
+
+        /* Button glowing animation */
+        @keyframes glowButton {
+            0% {
+                box-shadow: 0 0 5px red, 0 0 15px red, 0 0 20px red;
+            }
+            100% {
+                box-shadow: 0 0 15px red, 0 0 30px red, 0 0 40px red;
+            }
         }
 
         /* Glowing line styling */
@@ -119,11 +155,18 @@
         }
 
         #resultList li {
-            padding: 5px;
-            margin: 5px;
+            padding: 10px;
+            margin: 10px;
             background-color: rgba(255, 0, 0, 0.5);
             border-radius: 4px;
             text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.5);
+            transition: all 0.3s ease;
+        }
+
+        #resultList li:hover {
+            background-color: rgba(255, 255, 0, 0.5);
+            color: black;
+            transform: scale(1.05);
         }
 
     </style>
@@ -151,14 +194,16 @@
 
 <!-- Particle Animation Script -->
 <script>
-    // Generate particles
+    // Generate particles with random colors and positions
     for (let i = 0; i < 50; i++) {
         let particle = document.createElement('div');
         particle.classList.add('particle');
+        let color = `hsl(${Math.random() * 360}, 100%, 50%)`; // Random color
         particle.style.left = `${Math.random() * 100}%`;
         particle.style.top = `${Math.random() * 100}%`;
         particle.style.width = `${Math.random() * 10 + 5}px`;
         particle.style.height = particle.style.width;
+        particle.style.backgroundColor = color;
         particle.style.animationDuration = `${Math.random() * 1 + 1}s`;
         document.body.appendChild(particle);
     }
@@ -180,37 +225,4 @@
             // Update TextView1 and TextView2 with time info
             document.getElementById('textview1').innerText = `Date: ${startTime.toISOString().split('T')[0]} 
                     Time (UTC): ${String(1000 + totalMinutes)}`;
-            document.getElementById('textview2').innerText = `Remaining: ${String(remainingSeconds).padStart(2, '0')} sec`;
-        }, 1000); // Update every second
-    }
-
-    // Handle Check Result Button Click
-    document.getElementById('checkResult').addEventListener('click', function () {
-        if (hasChecked) {
-            document.getElementById('textview3').innerText = "WAIT FOR NEXT PERIOD";
-            return;
-        }
-
-        // Simulate random result (BIG or SMALL)
-        let randomResult = Math.random() > 0.5 ? "BIG" : "SMALL";
-        document.getElementById('textview3').innerText = randomResult;
-
-        // Add the result to the ListView
-        let listItem = document.createElement('li');
-        listItem.textContent = randomResult;
-        document.getElementById('resultList').appendChild(listItem);
-
-        hasChecked = true;
-    });
-
-    // Handle History Button Click (Optional functionality)
-    document.getElementById('history').addEventListener('click', function () {
-        alert("History feature is under development.");
-    });
-
-    // Start the timer
-    startTimer();
-</script>
-
-</body>
-</html>
+            document.getElementById
